@@ -68,7 +68,7 @@ public class I2CControl {
     }
 
     public float[] getFloatArray(){
-        byte[] b = new byte[2];
+        byte[] b = new byte[8];
         int numOfFloats = 2;
 
         try{
@@ -84,7 +84,6 @@ public class I2CControl {
                 System.out.println(Integer.toHexString(i) + ", ");
             }
 
-            System.out.println("");
 
         } catch (IOException e){
             System.err.println("Failed to read a float array.");

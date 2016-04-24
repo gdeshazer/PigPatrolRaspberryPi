@@ -22,7 +22,7 @@ public class I2CControlTest {
     }
 
     public float[] getFloatArray(){
-        byte[] b = new byte[] {63, -128, 0, 0, 64, 0, 0, 0};
+        byte[] b = new byte[] {63, -128, 0, 0, 63, -128, 0, 0};
         float[] returnFloat = new float[2];
 
         for(int i  = 0; i < 2; i++){

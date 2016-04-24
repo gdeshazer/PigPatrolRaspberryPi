@@ -60,15 +60,17 @@ public class Main {
         while (counter != 100) {
             String input = "";
 
-            float returnFloat;
-            sampleTime.setStartTime();
-            returnFloat = controller.getFloat();
+            float[] returnFloat = new float[2];
 
-//            for(float i : returnFloat){
-//                input = input + Float.toString(i) + "\t";
-//            }
-            input = Float.toString(returnFloat) + "\t";
-            input = input +  "\t" + Long.toString(timer.getDeltaTime());
+            sampleTime.setStartTime();
+
+            returnFloat = controller.getFloatArray();
+
+            for(float i : returnFloat){
+                input = input + Float.toString(i) + "\t";
+            }
+
+            input = input + Long.toString(timer.getDeltaTime());
 
             if(sampleTime.getDeltaTime() < delayTime) {
                 try {
