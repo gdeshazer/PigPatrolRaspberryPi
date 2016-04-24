@@ -1,7 +1,13 @@
 package com.PigPatrol;
 
 /**
- * Created by grantdeshazer on 4/14/16.
+ * Created by gdeshazer on 4/14/16.
+ *
+ * I2C Control class
+ *
+ *  Stores I2C devices address
+ *  Collects data from specific device
+ *
  */
 
 import com.pi4j.io.i2c.I2CBus;
@@ -20,16 +26,17 @@ public class I2CControl {
         System.out.println("Generating I2C Bus");
         try {
             m_bus = I2CFactory.getInstance(I2CBus.BUS_1);
-            m_devAddr = 0x10;
+            m_devAddr = 0x10;   //default I2C address
             m_arduino = m_bus.getDevice(m_devAddr);
 
 
         } catch(IOException e){
-            System.err.println("Something has gone wrong!");
+            System.err.println("Something has gone wrong!  Could not get I2C set up.");
             e.printStackTrace();
         }
     }
 
+    //Initilize device with specific I2C Address
     public I2CControl(int devAddr){
         System.out.println("Generating I2C Bus");
         try {
@@ -39,11 +46,14 @@ public class I2CControl {
 
 
         } catch(IOException e){
-            System.err.println("Something has gone wrong!");
+            System.err.println("Something has gone wrong!  Could not get I2C set up.");
             e.printStackTrace();
         }
     }
 
+    //reads a single float array
+    //assumes that endianness is dealt with
+    // on the connected I2C device
     public float getFloat(){
         byte[] input = new byte[4];
 
@@ -67,22 +77,19 @@ public class I2CControl {
         return buffer.getFloat();
     }
 
+    //Returns a float array of values retreived from
+    //I2C device.  Currently hardcoded for 2 floats or
+    //8 Bytes of data.
     public float[] getFloatArray(){
-        byte[] b = new byte[8];
         int numOfFloats = 2;
+        byte[] b = new byte[4*numOfFloats];
 
         try{
-            //read number of floats to receive
-//            m_arduino.read(b, 0, 1);
-//            numOfFloats = b[0];
-//
-//            //read floats
-//            b = new byte[numOfFloats*4];
-            m_arduino.read(b,0,8);
+            m_arduino.read(b,0,4*numOfFloats);
 
-            for(int i : b){
-                System.out.println(Integer.toHexString(i) + ", ");
-            }
+//            for(int i : b){
+//                System.out.println(Integer.toHexString(i) + ", ");
+//            }
 
 
         } catch (IOException e){
@@ -92,8 +99,8 @@ public class I2CControl {
 
         float[] returnFloat = new float[numOfFloats];
 
-        int offset = 0;
-        for(int i  = 0; i < 2; i++){
+        //coverts chuncks of 4 bytes into a single float
+        for(int i  = 0; i < numOfFloats; i++){
             ByteBuffer buffer = ByteBuffer.wrap(b, i*4,4);
             returnFloat[i] = buffer.getFloat();
 

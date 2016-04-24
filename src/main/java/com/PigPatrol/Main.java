@@ -1,9 +1,14 @@
 package com.PigPatrol;
 
 /**
- * Created by grantdeshazer on 4/14/16.
+ * Created by gdeshazer on 4/14/16.
  *
  * I2C controller using pi4j library.
+ *
+ * Currently collects 2 floats from connected I2C device and stores the returned values in a flat file.
+ *
+ * Data stored via the java built in logger, which is fairly easy to implement as it avoids file i/o.
+ *
  */
 
 import java.io.*;
@@ -11,24 +16,23 @@ import java.util.logging.*;
 
 
 public class Main {
-    //using a logger for data storage...simple set up and relatively fast
-    //easier than file IO
+
     //set up for logger
     private static final Logger  LOGGER = Logger.getLogger( Main.class.getName() );
     private static FileHandler fh = null;
     private static ConsoleHandler ch = new ConsoleHandler();
     private static DataLogFormater form = new DataLogFormater();
 
-    //Logger congfiguration
+    //Logger configuration
     private static void init(){
 
         int fileSize = (int) (5 * Math.pow(10,6));
         int numberOfFiles = 10;
 
         try{
-            //path here is specific to beaglebone
-            //boolean param controls whether file is appended to
-            //or is overwritten
+            //Path specified here is specific to Raspberry Pi
+            //boolean flag sets whether files will be overwritten or appended to.  True means files will be
+            //appended.
             fh = new FileHandler("/home/pi/Desktop/PigPatrolStuff/data/data%g.log",fileSize,numberOfFiles, true);
         }catch (IOException e){
             System.err.println("Failed to open file");
@@ -58,11 +62,10 @@ public class Main {
 
         timer.setStartTime();
         while (counter != 100) {
-            String input = "";
-
-            float[] returnFloat = new float[2];
-
             sampleTime.setStartTime();
+
+            String input = "";
+            float[] returnFloat = new float[2];
 
             returnFloat = controller.getFloatArray();
 
@@ -72,9 +75,11 @@ public class Main {
 
             input = input + Long.toString(timer.getDeltaTime());
 
+            //Sample collection control.  Will not allow for data to be requested on I2C more than a certain
+            //number of times per second.
             if(sampleTime.getDeltaTime() < delayTime) {
                 try {
-                    Thread.sleep(delayTime);  //like arduio delay (delay(10))
+                    Thread.sleep(delayTime);  //like Arduio delay (delay(10))
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -1,7 +1,7 @@
 package com.PigPatrol;
 
 /**
- * Created by grantdeshazer on 4/19/16.
+ * Created by gdeshazer on 4/19/16.
  */
 public class Timer {
     public Timer(){

@@ -4,14 +4,14 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /**
- * Created by grantdeshazer on 3/16/16.
+ * Created by gdeshazer on 3/16/16.
  *
- * Custom logger formater.  Data recorded first
+ * Custom logger formatter.  Data recorded first
  * timestamp recorded second.
  *
- * This will need to be changed latter in order to accomadate
- * sensor position.  Likely the arduino will send the actual
- * sensor position.
+ * More will be added to formatter in order to make
+ * stored data more useful.  Currently the majority
+ * of formatting is being handled elsewhere.
  *
  */
 public class DataLogFormater extends Formatter {
