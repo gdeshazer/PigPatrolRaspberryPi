@@ -28,7 +28,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>com.pigPatrol</classpathPrefix>
+                            <classpathPrefix>com.PigPatrol</classpathPrefix>
                             <mainClass>Main</mainClass>
                         </manifest>
                     </archive>
@@ -50,7 +50,7 @@
                             <transformers>
                                 <!-- add Main-Class to manifest file -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.pigPatrol.Main</mainClass>
+                                    <mainClass>com.PigPatrol.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

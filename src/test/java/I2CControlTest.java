@@ -25,7 +25,6 @@ public class I2CControlTest {
         byte[] b = new byte[] {63, -128, 0, 0, 64, 0, 0, 0};
         float[] returnFloat = new float[2];
 
-        int offset = 0;
         for(int i  = 0; i < 2; i++){
             ByteBuffer buffer = ByteBuffer.wrap(b, i*4,4);
             returnFloat[i] = buffer.getFloat();

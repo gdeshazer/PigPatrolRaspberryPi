@@ -20,7 +20,7 @@ public class I2CControl {
         System.out.println("Generating I2C Bus");
         try {
             m_bus = I2CFactory.getInstance(I2CBus.BUS_1);
-            m_devAddr = 0x11;
+            m_devAddr = 0x10;
             m_arduino = m_bus.getDevice(m_devAddr);
 
 
@@ -55,23 +55,36 @@ public class I2CControl {
             e.printStackTrace();
         }
 
+//        for(int i : input){
+//            System.out.println(Integer.toHexString(i) + ", ");
+//        }
+//
+//        System.out.println("\n");
+
+
         ByteBuffer buffer = ByteBuffer.wrap(input);
 
         return buffer.getFloat();
     }
 
     public float[] getFloatArray(){
-        byte[] b = new byte[1];
-        int numOfFloats = 1;
+        byte[] b = new byte[2];
+        int numOfFloats = 2;
 
         try{
             //read number of floats to receive
-            m_arduino.read(b, 0, 1);
-            numOfFloats = b[0];
+//            m_arduino.read(b, 0, 1);
+//            numOfFloats = b[0];
+//
+//            //read floats
+//            b = new byte[numOfFloats*4];
+            m_arduino.read(b,0,8);
 
-            //read floats
-            b = new byte[numOfFloats*4];
-            m_arduino.read(b,0,numOfFloats*4);
+            for(int i : b){
+                System.out.println(Integer.toHexString(i) + ", ");
+            }
+
+            System.out.println("");
 
         } catch (IOException e){
             System.err.println("Failed to read a float array.");
@@ -81,7 +94,7 @@ public class I2CControl {
         float[] returnFloat = new float[numOfFloats];
 
         int offset = 0;
-        for(int i  = 0; i < numOfFloats; i++){
+        for(int i  = 0; i < 2; i++){
             ByteBuffer buffer = ByteBuffer.wrap(b, i*4,4);
             returnFloat[i] = buffer.getFloat();
 
