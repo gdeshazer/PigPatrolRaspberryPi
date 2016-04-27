@@ -7,15 +7,19 @@ logger.  The raw data is stored with a time stamp.
 
 Data collected from an I2C device is then stored in a specified directory.  This directory can be changed to fit
 what ever is necessary.  Each data log file should be limited to a size of 50Mb and new files will automatically be
-generated when they reach the maximum size.
+generated when they reach the maximum size.  No more than 10 data files will be generated.  This number can be changed
+as necessary, along with the overall file size.
+
+The program now has a toggle function to start and stop data logging via a momentary push button.  The button allows
+for the user to control when data is being logged without having to be remote shelled into the Rasberry Pi.
 
 The Arduino code that is used alongside this can be found [here](https://github.com/gdeshazer/Arduino-Capacitive-Sensor).
 
 ## Future Changes
 
-- Start and stop data collection with button press rather than launching the jar.
-- Include start up script to be installed on Raspberry Pi to start java app when the Raspberry Pi is powered on.
-- Expand returned float array to accommodate more sensors.
+* Include start up script to be installed on Raspberry Pi to start java app when the Raspberry Pi is powered on.
+* Expand returned float array to accommodate more sensors.
+
 
 ## Project Goal
 

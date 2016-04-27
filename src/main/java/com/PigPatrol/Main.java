@@ -11,6 +11,8 @@ package com.PigPatrol;
  *
  */
 
+import com.pi4j.io.gpio.*;
+
 import java.io.*;
 import java.util.logging.*;
 
@@ -22,6 +24,9 @@ public class Main {
     private static FileHandler fh = null;
     private static ConsoleHandler ch = new ConsoleHandler();
     private static DataLogFormater form = new DataLogFormater();
+
+    private static GpioController gpio;
+    private static GpioPinDigitalInput button;
 
     //Logger configuration
     private static void init(){
@@ -49,8 +54,16 @@ public class Main {
 
     }
 
+    private static void initPin(){
+        System.out.println("Initilizing pins");
+        gpio= GpioFactory.getInstance();
+        button = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00);
+
+    }
 
     public static void main(String[] args) throws IOException {
+        initPin();
+
         init();
         Timer timer = new Timer();
         Timer sampleTime = new Timer();
@@ -61,34 +74,65 @@ public class Main {
         I2CControl controller = new I2CControl();
 
         timer.setStartTime();
-        while (counter != 100) {
-            sampleTime.setStartTime();
 
-            String input = "";
-            float[] returnFloat = new float[2];
+        boolean state = false;
+        String previous = "LOW";
+        Timer switchDebounce = new Timer();
 
-            returnFloat = controller.getFloatArray();
+        while(true) {
+            PinState p = button.getState();
 
-            for(float i : returnFloat){
-                input = input + Float.toString(i) + "\t";
-            }
 
-            input = input + Long.toString(timer.getDeltaTime());
+            if (p.toString() == "HIGH" && previous == "LOW" && switchDebounce.getCurrentTime() -
+                    switchDebounce.getTime() > 10){
 
-            //Sample collection control.  Will not allow for data to be requested on I2C more than a certain
-            //number of times per second.
-            if(sampleTime.getDeltaTime() < delayTime) {
-                try {
-                    Thread.sleep(delayTime);  //like Arduio delay (delay(10))
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if(state == false){
+                    state = true;
+                } else {
+                    state = false;
                 }
+
+                switchDebounce.setTime();
             }
 
+            if(p.toString() == "LOW"){
+                previous = "LOW";
+            } else {
+                previous = "HIGH";
+            }
 
-            LOGGER.log(Level.INFO, input);  //Store collected data in log file
+            if (state) {
+                System.out.println("Reading values");
+                sampleTime.setStartTime();
 
-            counter++;
+                String input = "";
+                float[] returnFloat = new float[2];
+
+                returnFloat = controller.getFloatArray();
+
+                for (float i : returnFloat) {
+                    input = input + Float.toString(i) + "\t";
+                }
+
+                input = input + Long.toString(timer.getDeltaTimeFromStart());
+
+                //Sample collection control.  Will not allow for data to be requested on I2C more than a certain
+                //number of times per second.
+                if (sampleTime.getDeltaTimeFromStart() < delayTime) {
+                    try {
+                        Thread.sleep(delayTime);  //like Arduio delay (delay(10))
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                LOGGER.log(Level.INFO, input);  //Store collected data in log file
+
+                counter++;
+            } else {
+                System.out.println("Waiting for Button Input");
+            }
         }
     }
 
