@@ -54,10 +54,12 @@ public class Main {
 
     }
 
+    //pin initialization
     private static void initPin(){
         System.out.println("Initilizing pins");
         gpio= GpioFactory.getInstance();
-        button = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00);
+        button = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00); //GPIO 0 starts at pin 11 on the break out
+                                                                  //labeled as GPIO 17
 
     }
 
@@ -69,11 +71,10 @@ public class Main {
         Timer sampleTime = new Timer();
 
         int counter = 0;
-        int delayTime = 50;
+        int delayTime = 25;
 
         I2CControl controller = new I2CControl();
 
-        timer.setStartTime();
 
         boolean state = false;
         String previous = "LOW";
@@ -82,14 +83,17 @@ public class Main {
         while(true) {
             PinState p = button.getState();
 
-
+            //button polling to toggle data collection and storage
             if (p.toString() == "HIGH" && previous == "LOW" && switchDebounce.getCurrentTime() -
                     switchDebounce.getTime() > 10){
 
                 if(state == false){
+                    timer.setStartTime();
                     state = true;
+                    System.out.println("Starting");
                 } else {
                     state = false;
+                    System.out.println("Finished");
                 }
 
                 switchDebounce.setTime();
@@ -101,8 +105,10 @@ public class Main {
                 previous = "HIGH";
             }
 
+
+            //Data collection and storage loop
+            //pull out into funciton?
             if (state) {
-                System.out.println("Reading values");
                 sampleTime.setStartTime();
 
                 String input = "";
@@ -131,7 +137,7 @@ public class Main {
 
                 counter++;
             } else {
-                System.out.println("Waiting for Button Input");
+//                System.out.println("Waiting for Button Input");
             }
         }
     }

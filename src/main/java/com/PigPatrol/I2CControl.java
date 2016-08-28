@@ -78,10 +78,10 @@ public class I2CControl {
     }
 
     //Returns a float array of values retreived from
-    //I2C device.  Currently hardcoded for 2 floats or
+    //I2C device.  Currently hardcoded for 4 floats or
     //8 Bytes of data.
     public float[] getFloatArray(){
-        int numOfFloats = 2;
+        int numOfFloats = 4;
         byte[] b = new byte[4*numOfFloats];
 
         try{
