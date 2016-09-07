@@ -65,10 +65,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         initPin();
-
         init();
-        Timer timer = new Timer();
-        Timer sampleTime = new Timer();
+
+        Timer timer = new Timer("micro");
+        Timer sampleTime = new Timer("micro");
 
         int counter = 0;
         int delayTime = 25;
@@ -78,14 +78,19 @@ public class Main {
 
         boolean state = false;
         String previous = "LOW";
-        Timer switchDebounce = new Timer();
+        Timer switchDebounce = new Timer("mills");
+        Timer switchDelay = new Timer("millis");
+        PinState p = button.getState();
 
         while(true) {
-            PinState p = button.getState();
+            switchDelay.setStartTime();
+            if (switchDelay.getDeltaTimeFromStart() > 100) {
+                p = button.getState();
+                switchDelay.setStartTime();
+            }
 
             //button polling to toggle data collection and storage
-            if (p.toString() == "HIGH" && previous == "LOW" && switchDebounce.getCurrentTime() -
-                    switchDebounce.getTime() > 10){
+            if (p.toString() == "HIGH" && previous == "LOW" && switchDebounce.getDeltaTimeFromStart() > 10){
 
                 if(state == false){
                     timer.setStartTime();
@@ -96,7 +101,7 @@ public class Main {
                     System.out.println("Finished");
                 }
 
-                switchDebounce.setTime();
+                switchDebounce.setStartTime();
             }
 
             if(p.toString() == "LOW"){

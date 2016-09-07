@@ -20,14 +20,14 @@ import java.io.IOException;
 public class I2CControl {
     private I2CBus m_bus;
     private int m_devAddr;
-    private I2CDevice m_arduino;
+    private I2CDevice m_device;
 
     public I2CControl(){
         System.out.println("Generating I2C Bus");
         try {
             m_bus = I2CFactory.getInstance(I2CBus.BUS_1);
             m_devAddr = 0x10;   //default I2C address
-            m_arduino = m_bus.getDevice(m_devAddr);
+            m_device = m_bus.getDevice(m_devAddr);
 
 
         } catch(IOException e){
@@ -42,7 +42,7 @@ public class I2CControl {
         try {
             m_bus = I2CFactory.getInstance(I2CBus.BUS_1);
             m_devAddr = devAddr;
-            m_arduino = m_bus.getDevice(m_devAddr);
+            m_device = m_bus.getDevice(m_devAddr);
 
 
         } catch(IOException e){
@@ -58,7 +58,7 @@ public class I2CControl {
         byte[] input = new byte[4];
 
         try{
-            m_arduino.read(input, 0, 4);
+            m_device.read(input, 0, 4);
 
         } catch (IOException e){
             System.err.println("Failed to read a float");
@@ -85,7 +85,7 @@ public class I2CControl {
         byte[] b = new byte[4*numOfFloats];
 
         try{
-            m_arduino.read(b,0,4*numOfFloats);
+            m_device.read(b,0,4*numOfFloats);
 
 //            for(int i : b){
 //                System.out.println(Integer.toHexString(i) + ", ");
@@ -99,7 +99,7 @@ public class I2CControl {
 
         float[] returnFloat = new float[numOfFloats];
 
-        //coverts chuncks of 4 bytes into a single float
+        //coverts chunks of 4 bytes into a single float
         for(int i  = 0; i < numOfFloats; i++){
             ByteBuffer buffer = ByteBuffer.wrap(b, i*4,4);
             returnFloat[i] = buffer.getFloat();
