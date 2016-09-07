@@ -19,6 +19,11 @@ public class Timer {
             _t = 0;
             startTime = System.nanoTime();
 
+        } else {
+            _s = "millis";
+            _t = 0;
+            startTime = System.currentTimeMillis();
+            System.err.println("Incorrect timer selection");
         }
     }
 
@@ -61,7 +66,7 @@ public class Timer {
     }
 
 
-    private long nanoToMicro(long time){
+    public long nanoToMicro(long time){
         return (long) (((double) time) * 0.001);
     }
 
