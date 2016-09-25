@@ -14,6 +14,7 @@ package com.PigPatrol;
 import com.pi4j.io.gpio.*;
 
 import java.io.*;
+import java.util.Vector;
 import java.util.logging.*;
 
 
@@ -63,6 +64,7 @@ public class Main {
 
     }
 
+
     public static void main(String[] args) throws IOException {
         initPin();
         init();
@@ -70,20 +72,23 @@ public class Main {
         Timer timer = new Timer("micro");
         Timer sampleTime = new Timer("micro");
 
-        int counter = 0;
-        int delayTime = 25;
+        int delayTime = 1;
 
         I2CControl controller = new I2CControl();
 
 
         boolean state = false;
         String previous = "LOW";
-        Timer switchDebounce = new Timer("mills");
+        Timer switchDebounce = new Timer("millis");
         Timer switchDelay = new Timer("millis");
         PinState p = button.getState();
 
+        long sum = 0;
+        long average = 0;
+
+        Vector<Long> timestamp = new Vector<Long>();
+
         while(true) {
-            switchDelay.setStartTime();
             if (switchDelay.getDeltaTimeFromStart() > 100) {
                 p = button.getState();
                 switchDelay.setStartTime();
@@ -114,9 +119,10 @@ public class Main {
             //Data collection and storage loop
             //pull out into funciton?
             if (state) {
-                sampleTime.setStartTime();
-
                 String input = "";
+                sampleTime.setStartTime();
+                long t = 0;
+
                 float[] returnFloat = new float[2];
 
                 returnFloat = controller.getFloatArray();
@@ -127,23 +133,48 @@ public class Main {
 
                 input = input + Long.toString(timer.getDeltaTimeFromStart());
 
+                timestamp.add(timer.getDeltaTimeFromStart());
+
                 //Sample collection control.  Will not allow for data to be requested on I2C more than a certain
                 //number of times per second.
-                if (sampleTime.getDeltaTimeFromStart() < delayTime) {
-                    try {
-                        Thread.sleep(delayTime);  //like Arduio delay (delay(10))
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                while(t < delayTime){
+                    t = sampleTime.getDeltaTimeFromStart();
                 }
-
+//                if (sampleTime.getDeltaTimeFromStart() < delayTime) {
+//                    try {
+//                        Thread.sleep(delayTime);  //like Arduio delay (delay(10))
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
 
                 LOGGER.log(Level.INFO, input);  //Store collected data in log file
 
-                counter++;
             } else {
-//                System.out.println("Waiting for Button Input");
+                long l = 0;
+                Vector<Long> longVector = new Vector<Long>(1);
+                for(long i : timestamp){
+                    longVector.add(i - l);
+                    l = i;
+                }
+
+                timestamp.clear();
+
+                for(long i : longVector){
+                    sum = sum + i;
+                }
+
+                if(!longVector.isEmpty()){
+                    average = sum / longVector.size();
+                    longVector.clear();
+                    System.out.println("Average loop time = " + average);
+                    average = 0;
+                    sum = 0;
+                }
+
+
             }
+
         }
     }
 

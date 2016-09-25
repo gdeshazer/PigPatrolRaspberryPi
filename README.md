@@ -17,12 +17,6 @@ The Arduino code that is used alongside this can be found [here](https://github.
 
 ## Future Changes
 
-* Include start up script to be installed on Raspberry Pi to start java app when the Raspberry Pi is powered on.
 * Expand returned float array to accommodate more sensors.
-
-
-## Project Goal
-
-This project aims to test how effective inductive sensors are at detecting changes within a metal surface.
-Based on the results the sensors would then be included on a pipeline inspection robot to find defects on the inside of a
-pipe.
+* Speed optimization for faster read times.
+* Change returned values from floats to smaller data type.

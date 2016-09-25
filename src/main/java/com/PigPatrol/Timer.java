@@ -9,19 +9,23 @@ public class Timer {
         if (s == "millis") {
             _s = "millis";
             _t = 0;
+            _time = 0;
             startTime = System.currentTimeMillis();
         } else if (s == "nano") {
             _s = "nano";
             _t = 0;
+            _time = 0;
             startTime = System.nanoTime();
         } else if (s == "micro"){
             _s = "micro";
             _t = 0;
+            _time = 0;
             startTime = System.nanoTime();
 
         } else {
             _s = "millis";
             _t = 0;
+            _time = 0;
             startTime = System.currentTimeMillis();
             System.err.println("Incorrect timer selection");
         }
@@ -37,6 +41,16 @@ public class Timer {
             startTime = this.nanoToMicro(System.nanoTime());
         }
 
+    }
+
+    public void setTime(){
+        if(_s == "millis"){
+            _time = System.currentTimeMillis();
+        } else if (_s == "nano") {
+            _time = System.nanoTime();
+        } else if (_s == "micro"){
+            _time = this.nanoToMicro(System.nanoTime());
+        }
     }
 
     public long getCurrentTime() {
@@ -75,6 +89,7 @@ public class Timer {
     }
 
     private long startTime;
+    private long _time;
     private long _t;
     private String _s;
 
