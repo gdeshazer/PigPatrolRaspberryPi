@@ -17,6 +17,4 @@ The Arduino code that is used alongside this can be found [here](https://github.
 
 ## Future Changes
 
-* Expand returned float array to accommodate more sensors.
-* Speed optimization for faster read times.
-* Change returned values from floats to smaller data type.
+* Expand returned byte array to accommodate more sensors.
