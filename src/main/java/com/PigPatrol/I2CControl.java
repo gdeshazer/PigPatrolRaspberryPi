@@ -109,25 +109,29 @@ public class I2CControl {
         return returnFloat;
     }
 
-    public int[] getIntArray(){
-        int numOfInts = 4;
-        byte[] b = new byte[4*numOfInts];
+    public short[] getShortArray(){
+        short numOfshorts= 4;
+        byte[] b = new byte[2*numOfshorts];
 
         try{
-            m_device.read(b,0,4*numOfInts);
+            m_device.read(b,0,2*numOfshorts);
         } catch (IOException e) {
             System.err.println("Failed to read int array");
             e.printStackTrace();
         }
 
-        int[] returnInt = new int[numOfInts];
+//        for(short i : b){
+//            System.out.println(Short.toString(i));
+//        }
 
-        for (int i = 0; i < numOfInts; i++){
+        short[] returnShort = new short[numOfshorts];
+
+        for (int i = 0; i < numOfshorts; i++){
             ByteBuffer buffer = ByteBuffer.wrap(b,i*2,2);
-            returnInt[i] = buffer.getInt();
+            returnShort[i] = buffer.getShort();
         }
 
-        return returnInt;
+        return returnShort;
     }
 
 }

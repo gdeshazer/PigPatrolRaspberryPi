@@ -123,54 +123,56 @@ public class Main {
                 sampleTime.setStartTime();
                 long t = 0;
 
-                float[] returnFloat = new float[2];
+//                float[] returnFloat = new float[2];
+                short[] returnShort = new short[4];
 
-                returnFloat = controller.getFloatArray();
+                returnShort = controller.getShortArray();
 
-                for (float i : returnFloat) {
-                    input = input + Float.toString(i) + "\t";
+//                returnFloat = controller.getFloatArray();
+
+//                for (float i : returnFloat) {
+//                    input = input + Float.toString(i) + "\t";
+//                }
+
+                for(int i : returnShort){
+                    input = input + Integer.toString(i) + "\t";
                 }
 
                 input = input + Long.toString(timer.getDeltaTimeFromStart());
 
-                timestamp.add(timer.getDeltaTimeFromStart());
+                //loop time
+//                timestamp.add(timer.getDeltaTimeFromStart());
 
                 //Sample collection control.  Will not allow for data to be requested on I2C more than a certain
                 //number of times per second.
+                //this is a busy wait loop.  Does not release cpu.
                 while(t < delayTime){
                     t = sampleTime.getDeltaTimeFromStart();
                 }
-//                if (sampleTime.getDeltaTimeFromStart() < delayTime) {
-//                    try {
-//                        Thread.sleep(delayTime);  //like Arduio delay (delay(10))
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
 
                 LOGGER.log(Level.INFO, input);  //Store collected data in log file
 
             } else {
-                long l = 0;
-                Vector<Long> longVector = new Vector<Long>(1);
-                for(long i : timestamp){
-                    longVector.add(i - l);
-                    l = i;
-                }
-
-                timestamp.clear();
-
-                for(long i : longVector){
-                    sum = sum + i;
-                }
-
-                if(!longVector.isEmpty()){
-                    average = sum / longVector.size();
-                    longVector.clear();
-                    System.out.println("Average loop time = " + average);
-                    average = 0;
-                    sum = 0;
-                }
+//                long l = 0;
+//                Vector<Long> longVector = new Vector<Long>(1);
+//                for(long i : timestamp){
+//                    longVector.add(i - l);
+//                    l = i;
+//                }
+//
+//                timestamp.clear();
+//
+//                for(long i : longVector){
+//                    sum = sum + i;
+//                }
+//
+//                if(!longVector.isEmpty()){
+//                    average = sum / longVector.size();
+//                    longVector.clear();
+//                    System.out.println("Average loop time = " + average);
+//                    average = 0;
+//                    sum = 0;
+//                }
 
 
             }
