@@ -1,0 +1,40 @@
+Elastisearch Notes
+    Elastisearch is stored within its own folder
+        works along side kibana, and logstash
+    Logstash
+        Manages the log files
+        has a filter which scans the files
+
+        start logstash from dirrectory it lives in with bin/logstash -f pigpatrol.conf
+
+        filter used for this projet stored under Documents/logstash*/pigpatrol.conf
+
+            input{
+              file{
+                path => "/Users/grantdeshazer/Desktop/LogFiles/*.log"
+                start_position=>beginning
+                ignore_older=>0
+                sincedb_path=>"/dev/null"
+              }
+            }
+
+            filter{
+              grok{
+                 match => { "message" => "%{NUMBER:Sensor1:float}\t%{NUMBER:Sensor2:float}\t%{NUMBER:Sensor3:float}\t%{NUMBER:Sensor4:float}\t%{NUMBER:TimeStamp:float}"}
+              }
+            }
+
+            output{
+              elasticsearch{
+            	hosts=> ["localhost:9200"]
+              }
+              stdout{}
+            }
+
+        grok is the filter
+            the NUMBER:sensor1:float, identifies the numbers in the line, names them, and marks them as floats
+        Output dirrects the outputs from the logstash to elasticsearch
+            elasticsearch has an open port under 9200
+    Kibana is a web page that takes data from elasticsearch and makes it look pretty in html gui
+        lives in Documents/kibana.*/
+        to get to the web browser version go to http://127.0.0.1:5061
