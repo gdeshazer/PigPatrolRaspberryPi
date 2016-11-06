@@ -1,6 +1,10 @@
 Elastisearch Notes
     Elastisearch is stored within its own folder
         works along side kibana, and logstash
+    Kopf
+        Web browser based manager for elastisearch
+        installed with command:  elasticsearch-2.4.0/bin/plugin install lmenezes/elasticsearch-kopf/{2.0/x2.1.1}
+
     Logstash
         Manages the log files
         has a filter which scans the files
@@ -31,10 +35,24 @@ Elastisearch Notes
               stdout{}
             }
 
-        grok is the filter
+        grok is the filter plugin (comes installed with elastisearch)
             the NUMBER:sensor1:float, identifies the numbers in the line, names them, and marks them as floats
         Output dirrects the outputs from the logstash to elasticsearch
             elasticsearch has an open port under 9200
+
     Kibana is a web page that takes data from elasticsearch and makes it look pretty in html gui
         lives in Documents/kibana.*/
-        to get to the web browser version go to http://127.0.0.1:5061
+        When started will print out the server ip that value is being broadcast to
+            to get to the web browser version go to http://127.0.0.1:5061
+            or http://0.0.0.1:5061
+
+
+        Graph is made in visualize tab
+            search for Sensor#:[0 TO 1000]  ~> Search for values rather than range
+                range is determined by when the file is entered
+            X metric
+                Term              :  TimeStamp
+                descending order  :  range 2000
+            Y Metric
+                Term   :  Sensor#
+                Metric :  Max
