@@ -8,6 +8,10 @@ package com.PigPatrol;
  *  Stores I2C devices address
  *  Collects data from specific device
  *
+ *  ** Consider **
+ *    May want to implement the actual short array collection
+ *    in its own class and only have this class deal with i2c handling
+ *
  */
 
 import com.pi4j.io.i2c.I2CBus;

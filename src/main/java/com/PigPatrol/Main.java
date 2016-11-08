@@ -5,7 +5,7 @@ package com.PigPatrol;
  *
  * I2C controller using pi4j library.
  *
- * Currently collects 2 floats from connected I2C device and stores the returned values in a flat file.
+ * Currently collects 4 shorts from connected I2C device and stores the returned values in a flat file.
  *
  * Data stored via the java built in logger, which is fairly easy to implement as it avoids file i/o.
  *
