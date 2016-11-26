@@ -16,7 +16,7 @@
         </dependency>
 
         <!-- hamcrest is included in junit.  Marking it as dependent before junit helps prevent long build
-         scripts. limiting it to the testing scope also helpes to prevent it from being included in final
+         scripts. limiting it to the testing scope also helps to prevent it from being included in final
          package by mistake. -->
         <dependency>
             <groupId>org.hamcrest</groupId>

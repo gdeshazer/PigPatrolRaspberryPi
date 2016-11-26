@@ -1,9 +1,23 @@
 package com.PigPatrol;
 
 /**
- * Created by gdeshazer on 4/19/16.
+ * Created by Grant DeShazer on 4/19/16.
+ *
+ * Timer class
+ *
+ *  Generated objects used to keep track of timing functions in main loop.
+ *  Can be customized to perform timing functions in milliseconds, nanoseconds,
+ *  or microseconds.  Default timing behavior is in milliseconds.
  */
 public class Timer {
+
+    public Timer(){
+        _s = "millis";
+        _t = 0;
+        _time = 0;
+        startTime = System.currentTimeMillis();
+        System.err.println("Defaulting to millisecond timing");
+    }
 
     public Timer(String s) {
         if (s == "millis") {
@@ -31,6 +45,7 @@ public class Timer {
         }
     }
 
+    //Store starting time from which delta time is calculated from.
     public void setStartTime() {
 
         if (_s == "millis") {
@@ -43,16 +58,7 @@ public class Timer {
 
     }
 
-    public void setTime(){
-        if(_s == "millis"){
-            _time = System.currentTimeMillis();
-        } else if (_s == "nano") {
-            _time = System.nanoTime();
-        } else if (_s == "micro"){
-            _time = this.nanoToMicro(System.nanoTime());
-        }
-    }
-
+    //Return current time stamp in units specified by object.
     public long getCurrentTime() {
 
         if(_s == "millis"){
@@ -66,7 +72,8 @@ public class Timer {
         return 0;
     }
 
-    public long getDeltaTimeFromStart() {
+    //Returns elapsed time in units specified by object.
+    public long getDeltaTFromStart() {
 
         if (_s == "millis"){
             _t = System.currentTimeMillis() - startTime;
@@ -79,15 +86,18 @@ public class Timer {
         return _t;
     }
 
-
+    //----------------------------------------//
+    //----------- TIME CONVERSIONS -----------//
+    //----------------------------------------//
     public long nanoToMicro(long time){
         return (long) (((double) time) * 0.001);
     }
 
     private long nanoToMillis(long time){
-        return (long) (((double)time) *  Math.pow(1,-6));
+        return (long) (((double)time) *  Math.pow(10,-6));
     }
 
+    //Object variables
     private long startTime;
     private long _time;
     private long _t;

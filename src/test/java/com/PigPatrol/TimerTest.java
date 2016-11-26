@@ -1,10 +1,19 @@
 package com.PigPatrol;
 
+
 import junit.framework.*;
 import org.junit.Test;
 
 /**
- * Created by grantdeshazer on 9/6/16.
+ * Created by Grant DeShazer on 9/6/16.
+ *
+ * Tester for Timing class.  This is designed to test
+ * conversion accuracy and the busy wait loop timing.
+ *
+ * Functions were copied from Timer class.  Future updates
+ * to this file should make an attempt to use the Timer class
+ * itself so that changes made to Timer will still be tested here.
+ *
  */
 public class TimerTest extends TestCase {
 
@@ -74,6 +83,8 @@ public class TimerTest extends TestCase {
         }
 
         //usually runs but depends a lot on processor availability
+        //Spikes in processor demand can slow this loop down enough to
+        //fail the test.
         //assertTrue(diff <= 1000);
     }
 
@@ -91,6 +102,7 @@ public class TimerTest extends TestCase {
 
         long nano = 1000;
         long millis = nanoToMicro(nano);
+
 
         assertEquals(1, millis);
 

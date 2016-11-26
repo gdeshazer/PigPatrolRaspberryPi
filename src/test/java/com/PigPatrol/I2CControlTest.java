@@ -6,7 +6,24 @@ import junit.framework.*;
 import org.junit.Test;
 
 /**
- * Created by grantdeshazer on 4/19/16.
+ * Created by Grant DeShazer on 4/19/16.
+ *
+ * Junit tests for implemented code.  Since
+ * it is difficult to test the actual I2C connection
+ * the testing performed here is looking at the conversion
+ * between byte arrays and and floats.
+ *
+ * Since the short conversion works on the same principle,
+ * the short array collection was not tested.
+ *
+ * Maven packaging will automatically run these tests in the package
+ * target.  Console output will display how tests performed.  More
+ * information on test results can be found in target/surefire-reports.
+ *      All tests are run by maven surefire plugin as part of the build
+ *      process.  Tests that fail to run will prevent the build process
+ *      and must, consequently, be dealt with immediately.  For
+ *      information regarding surefire plugin, consult
+ *      https://maven.apache.org/plugins/maven-shade-plugin/
  */
 
 
@@ -28,6 +45,8 @@ public class I2CControlTest extends TestCase{
         return buffer.getFloat();
     }
 
+    //Hard coded byte array to represent a float value of 1.  Note
+    //that these values are specific to java.
     @Test
     public float[] testGetFloatArray(){
         //hard coded byte array.  Testing conversion of bytes to float via bytebuffer
@@ -43,27 +62,9 @@ public class I2CControlTest extends TestCase{
         return returnFloat;
     }
 
+    //Code responsible for actually running the above tests.
     @Test
     public static void testRunner(){
-//        float f = 1;
-//        I2CControlTest test = new I2CControlTest();
-//
-//        System.out.println("float value:  " + f);
-//        f = test.testGetFloat(f);
-//        System.out.println("float value:  " + f);
-//
-//
-//        System.out.println("float value:  " + f);
-//        f = test.testGetFloat(f);
-//        System.out.println("float value:  " + f);
-//
-//        float[] fArray = new float[2];
-//
-//        fArray = test.getFloatArray();
-//
-//        System.out.println("float 1: " + fArray[0]);
-//        System.out.println("float 2: " + fArray[1]);
-
         I2CControlTest test = new I2CControlTest();
         float f = 1;
 

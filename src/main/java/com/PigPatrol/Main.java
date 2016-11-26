@@ -1,20 +1,24 @@
 package com.PigPatrol;
 
 /**
- * Created by gdeshazer on 4/14/16.
+ * Created by Grant DeShazer on 4/14/16.
  *
  * I2C controller using pi4j library.
  *
- * Currently collects 4 shorts from connected I2C device and stores the returned values in a flat file.
+ * Currently collects 4 shorts from connected I2C device
+ * and stores the returned values in a flat file.
  *
- * Data stored via the java built in logger, which is fairly easy to implement as it avoids file i/o.
+ * Data stored via the java built in logger, which is fairly
+ * easy to implement as it avoids file i/o.
+ *
+ * Does not implement IMU or dedicated ADC.  The specified ADC
+ * would communicate through serial lines rather than I2C.
  *
  */
 
 import com.pi4j.io.gpio.*;
 
 import java.io.*;
-import java.util.Vector;
 import java.util.logging.*;
 
 
@@ -24,12 +28,13 @@ public class Main {
     private static final Logger  LOGGER = Logger.getLogger( Main.class.getName() );
     private static FileHandler fh = null;
     private static ConsoleHandler ch = new ConsoleHandler();
-    private static DataLogFormater form = new DataLogFormater();
+    private static DataLogFormatter form = new DataLogFormatter();
 
     private static GpioController gpio;
     private static GpioPinDigitalInput button;
 
     //Logger configuration
+    //Using custom formater in the DataLogFormatter class
     private static void init(){
 
         int fileSize = (int) (5 * Math.pow(10,6));
@@ -55,7 +60,10 @@ public class Main {
 
     }
 
-    //pin initialization
+    //IO-pin initialization
+    //  See Pi4J Documentation for information regarding
+    //  IO implementation
+    //  Pin outs can be found with Raspberry Pi documentation
     private static void initPin(){
         System.out.println("Initilizing pins");
         gpio= GpioFactory.getInstance();
@@ -64,38 +72,49 @@ public class Main {
 
     }
 
-
+    //Main function, this is the function which controls all other
+    //code within program.
+    //  Momentary Switch used to control when data is being collected
+    //  and stored.  While this is necessary for testing purposes,
+    //  a final implementation will not need the toggle switch.
     public static void main(String[] args) throws IOException {
         initPin();
         init();
 
+        //Sample timers
+        //used to keep track of elapsed time and control
+        //delay time between requests for data
         Timer timer = new Timer("micro");
         Timer sampleTime = new Timer("micro");
 
+        //Delay time units determined by units used in sampletTime object
         int delayTime = 1;
 
+        //I2C object for I2C bus control
         I2CControl controller = new I2CControl();
 
 
+        //Momentary switch button control variables
         boolean state = false;
         String previous = "LOW";
         Timer switchDebounce = new Timer("millis");
         Timer switchDelay = new Timer("millis");
         PinState p = button.getState();
 
-        long sum = 0;
-        long average = 0;
-
-        Vector<Long> timestamp = new Vector<Long>();
+        //Unused variables for taking sample time average
+//        long sum = 0;
+//        long average = 0;
+//
+//        Vector<Long> timestamp = new Vector<Long>();
 
         while(true) {
-            if (switchDelay.getDeltaTimeFromStart() > 100) {
+            if (switchDelay.getDeltaTFromStart() > 100) {
                 p = button.getState();
                 switchDelay.setStartTime();
             }
 
             //button polling to toggle data collection and storage
-            if (p.toString() == "HIGH" && previous == "LOW" && switchDebounce.getDeltaTimeFromStart() > 10){
+            if (p.toString() == "HIGH" && previous == "LOW" && switchDebounce.getDeltaTFromStart() > 10){
 
                 if(state == false){
                     timer.setStartTime();
@@ -117,42 +136,37 @@ public class Main {
 
 
             //Data collection and storage loop
-            //pull out into funciton?
             if (state) {
                 String input = "";
                 sampleTime.setStartTime();
                 long t = 0;
 
-//                float[] returnFloat = new float[2];
                 short[] returnShort = new short[4];
 
                 returnShort = controller.getShortArray();
-
-//                returnFloat = controller.getFloatArray();
-
-//                for (float i : returnFloat) {
-//                    input = input + Float.toString(i) + "\t";
-//                }
 
                 for(int i : returnShort){
                     input = input + Integer.toString(i) + "\t";
                 }
 
-                input = input + Long.toString(timer.getDeltaTimeFromStart());
+                input = input + Long.toString(timer.getDeltaTFromStart());
 
-                //loop time
-//                timestamp.add(timer.getDeltaTimeFromStart());
+                //loop time.  Used in optimization calculations
+//                timestamp.add(timer.getDeltaTFromStart());
 
-                //Sample collection control.  Will not allow for data to be requested on I2C more than a certain
-                //number of times per second.
-                //this is a busy wait loop.  Does not release cpu.
+                //Sample collection control.
+                //  Will not allow for data to be requested on I2C more than a certain
+                //  number of times per second.
+                //  This is a busy wait loop.  Does not release cpu.
                 while(t < delayTime){
-                    t = sampleTime.getDeltaTimeFromStart();
+                    t = sampleTime.getDeltaTFromStart();
                 }
 
                 LOGGER.log(Level.INFO, input);  //Store collected data in log file
 
             } else {
+
+                //Sample time average calculation.  Used for testing optimization of code.
 //                long l = 0;
 //                Vector<Long> longVector = new Vector<Long>(1);
 //                for(long i : timestamp){
@@ -173,7 +187,6 @@ public class Main {
 //                    average = 0;
 //                    sum = 0;
 //                }
-
 
             }
 

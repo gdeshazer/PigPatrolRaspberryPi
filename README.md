@@ -18,3 +18,5 @@ The Arduino code that is used alongside this can be found [here](https://github.
 ## Future Changes
 
 * Expand returned byte array to accommodate more sensors.
+* Implement Serial or otherwise ADC for faster data collection
+* Implement I2C based IMU for velocity measurements
