@@ -9,7 +9,7 @@ package com.PigPatrol;
  * and stores the returned values in a flat file.
  *
  * Data stored via the java built in logger, which is fairly
- * easy to implement as it avoids file i/o.
+ * easy to implement and avoids file i/o.
  *
  * Does not implement IMU or dedicated ADC.  The specified ADC
  * would communicate through serial lines rather than I2C.
@@ -44,7 +44,7 @@ public class Main {
             //Path specified here is specific to Raspberry Pi
             //boolean flag sets whether files will be overwritten or appended to.  True means files will be
             //appended.
-            fh = new FileHandler("/home/pi/Desktop/PigPatrolStuff/data/data%g.log",fileSize,numberOfFiles, true);
+            fh = new FileHandler("/home/pi/Desktop/PigPatrolStuff/data/data%g.log",fileSize,numberOfFiles, false);
         }catch (IOException e){
             System.err.println("Failed to open file");
             e.printStackTrace();
